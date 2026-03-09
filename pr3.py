@@ -1,5 +1,4 @@
 import heapq
-
 graph = {
     'A': [('B', 2), ('C', 3), ('D', 4)],
     'B': [('E', 1), ('F', 3)],
@@ -15,33 +14,22 @@ graph = {
     'L': [],
     'M': []
 }
-
-def UCS(start, goal, graph):
-    # Initialize Priority Queue
-    PQ = [(0, start, [start])]
-    visited = {}
-
+def ucs(start,goal,graph):
+    PQ=[(0,start,[start])]
+    visited={}
     while PQ:
-        cost, node, path = heapq.heappop(PQ)
-
-        if node == goal:
-            return cost, path
-
-        # Check if node was visited with lower cost
-        if node in visited and visited[node] <= cost:
+        cost,node,path=heapq.heappop(PQ)
+        if(node==goal):
+            return cost,path
+        
+        if node in visited and visited[node]<=cost:
             continue
+        visited[node]=cost
 
-        # Update visited with current cost
-        visited[node] = cost
-
-        for neighbor, edge_cost in graph.get(node, []):
-            new_cost = cost + edge_cost
-            heapq.heappush(PQ, (new_cost, neighbor, path + [neighbor]))
-
-    return None
-
-
-cost, path = UCS('A', 'M', graph)
-
-print("Cost:", cost)
-print("Path:", path)
+        for neighbors,cumcost in graph.get(node,[]):
+            new_cost=cost+cumcost
+            if neighbors not in visited or new_cost<=visited[neighbors]:
+                heapq.heappush(PQ,(new_cost,neighbors,path+[neighbors]))
+cost,path = ucs('A','M',graph)
+print("Cost is: ",cost)
+print("Path is: ",path)
