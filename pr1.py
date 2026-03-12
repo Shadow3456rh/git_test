@@ -39,4 +39,55 @@ while True:
         a+=transfer
     elif(choice==7):
         break
+#######missionaries
+from collections import deque
+
+# check if state is valid
+def is_valid(m_left, c_left, m_right, c_right):
+    if m_left < 0 or c_left < 0 or m_right < 0 or c_right < 0:
+        return False
+    if m_left > 0 and c_left > m_left:
+        return False
+    if m_right > 0 and c_right > m_right:
+        return False
+    return True
+
+def bfs():
+    start = (3, 3, 1)  # missionaries, cannibals, boat (1 = left, 0 = right)
+    goal = (0, 0, 0)
+
+    queue = deque([(start, [])])
+    visited = set()
+
+    while queue:
+        (m, c, boat), path = queue.popleft()
+
+        if (m, c, boat) == goal:
+            return path + [(m, c, boat)]
+
+        if (m, c, boat) in visited:
+            continue
+
+        visited.add((m, c, boat))
+
+        moves = [(1,0),(2,0),(0,1),(0,2),(1,1)]
+
+        for m_move, c_move in moves:
+            if boat == 1:  # boat on left
+                new_state = (m-m_move, c-c_move, 0)
+                m_right = 3-(m-m_move)
+                c_right = 3-(c-c_move)
+            else:  # boat on right
+                new_state = (m+m_move, c+c_move, 1)
+                m_right = 3-(m+m_move)
+                c_right = 3-(c+c_move)
+
+            if is_valid(new_state[0], new_state[1], m_right, c_right):
+                queue.append((new_state, path + [(m, c, boat)]))
+
+solution = bfs()
+
+print("Solution Steps:")
+for step in solution:
+    print(step)
         
